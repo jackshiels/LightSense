@@ -26,15 +26,19 @@ LightSense sensors are split into two types of units: interior and exterior. The
 Parts that I intend to use include:
 
 ESP32 boards [[2]](#2):
+
 ![ESP32 boards](https://m.media-amazon.com/images/I/A1Ttq+6868L._SX522_.jpg)
 
 PIR sensors [[3]](#3):
+
 ![PIR sensors](https://m.media-amazon.com/images/I/71RI9JGggML._SX522_.jpg)
 
 DHT22 temperature sensors [[4]](#4):
+
 ![Temperature sensor](https://m.media-amazon.com/images/I/61CC4PSVW2L._SX522_.jpg)
 
 Raspberry Pi 4GB [[5]](#5):
+
 ![Raspberry Pi](https://m.media-amazon.com/images/I/912ja-jKOfL._AC_SX425_.jpg)
 
 By understanding when rooms are left empty with lights on, or heat is being lost, the user can better manage their energy usages throughout the home. A further application of the project is home security monitoring using the PIR sensors. The Unity3D executable may even be turned into an iOS or Android application. Some potential downsides include:
