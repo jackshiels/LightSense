@@ -44,7 +44,6 @@ Raspberry Pi 4GB [[5]](#5):
 By understanding when rooms are left empty with lights on, or heat is being lost, the user can better manage their energy usages throughout the home. A further application of the project is home security monitoring using the PIR sensors. The Unity3D executable may even be turned into an iOS or Android application. Some potential downsides include:
 
 * The need for sensor "tuning" against the baseline e.g., is the enternal light sensor able to capture ambient light effectively? What if the reflection of a car window shines on the light sensor?
-* It is yet unknown if 
 * It is not yet certain if an otherwise unheated home will naturally tend to the outside temperature (maybe the insulation is a "free" heating boost to the property).
 
 Despite these challenges, the project will be an interesting foray into the world of energy sensing, and provides a foundation from which to design even more technically advanced projects in future.
