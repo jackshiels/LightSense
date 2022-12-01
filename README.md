@@ -74,3 +74,4 @@ Amazon EU Sarl (2022). <i>Raspberry Pi 4 Model B (4GB)</i>. Available at: [https
 
 # Additional Sources:
 https://create.arduino.cc/projecthub/biharilifehacker/arduino-with-pir-motion-sensor-fd540a
+https://learn.adafruit.com/dht
