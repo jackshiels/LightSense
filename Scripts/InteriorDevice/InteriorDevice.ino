@@ -1,5 +1,3 @@
-import 
-
 // PIR sensor variables
 int PIRPin = D0;
 int sensorVal = 0;
@@ -13,8 +11,7 @@ void setup() {
 void loop() {
   delay(100);
   sensorVal = digitalRead(PIRPin);
-  if (sensorVal == HIGH
-  && prevSensorVal != HIGH){
+  if (sensorVal == HIGH){
     Serial.println("1");
   }
   else{
