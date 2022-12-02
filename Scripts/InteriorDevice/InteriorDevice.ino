@@ -49,7 +49,7 @@ void setup() {
 
 void loop() {
   // PIR
-  delay(1000);
+  delay(250);
   sensorVal = digitalRead(PIRPin);
   if (sensorVal == 1){
     Serial.println("1");
