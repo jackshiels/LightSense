@@ -79,3 +79,4 @@ https://learn.adafruit.com/dht
 https://esphome.io/cookbook/temt6000.html
 https://docs.arduino.cc/learn/microcontrollers/analog-input
 https://pubsubclient.knolleary.net/api
+https://workshops.cetools.org/codelabs/CASA0019-unity-mqtt/index.html?index=..%2F..index#0
