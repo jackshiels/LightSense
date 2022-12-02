@@ -4,7 +4,13 @@
 
 // PIR sensor variables
 int PIRPin = D0;
-const char* sensorVal = 0;
+int sensorVal = 0;
+const char* pirVal;
+
+// Light sensor variables
+int lightPin = A0;
+int lightVal = 0;
+char lightCharVal[4];
 
 // WiFi details
 const char* ssid = SECRET_SSID;
@@ -20,6 +26,7 @@ PubSubClient client(wifiClient);
 void setup() {
   // Set up the PIR
   pinMode(PIRPin, INPUT);
+  pinMode(lightPin, INPUT);
 
   // Create serial
   Serial.begin(115200);
@@ -41,16 +48,27 @@ void setup() {
 }
 
 void loop() {
-  delay(100);
+  // PIR
+  delay(1000);
   sensorVal = digitalRead(PIRPin);
-  if (sensorVal == "1"){
+  if (sensorVal == 1){
     Serial.println("1");
+    pirVal = "1";
   }
   else{
     Serial.println("0");
+    pirVal = "0";
   }
+
+  // Light
+  lightVal = analogRead(lightPin);
+  Serial.println(lightVal);
+  snprintf(lightCharVal, 4, "%d", lightVal);
+
+  // MQTT
   Serial.println(sensorVal);
-  client.publish("home/room/bedroom", sensorVal);
+  client.publish("home/room/bedroom/movement", pirVal);
+  client.publish("home/room/bedroom/light", lightCharVal);
 }
 
 void connectToMqtt(){
