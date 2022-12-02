@@ -77,3 +77,4 @@ https://create.arduino.cc/projecthub/biharilifehacker/arduino-with-pir-motion-se
 https://learn.adafruit.com/dht
 [https://www.youtube.com/watch?v=pxR6e-3XkIk](https://www.vishay.com/docs/81579/temt6000.pdf)
 https://esphome.io/cookbook/temt6000.html
+https://docs.arduino.cc/learn/microcontrollers/analog-input
