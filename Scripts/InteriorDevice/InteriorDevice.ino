@@ -10,7 +10,7 @@ const char* pirVal;
 // Light sensor variables
 int lightPin = A0;
 int lightVal = 0;
-char lightCharVal[4];
+char lightCharVal[5];
 
 // WiFi details
 const char* ssid = SECRET_SSID;
@@ -63,7 +63,7 @@ void loop() {
   // Light
   lightVal = analogRead(lightPin);
   Serial.println(lightVal);
-  snprintf(lightCharVal, 4, "%d", lightVal);
+  snprintf(lightCharVal, 5, "%d", lightVal);
 
   // MQTT
   Serial.println(sensorVal);
