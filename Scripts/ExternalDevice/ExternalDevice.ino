@@ -1,16 +1,14 @@
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 #include <PubSubClient.h>
 #include "arduino_secrets.h"
-
-// PIR sensor variables
-int PIRPin = D0;
-char* sensorVal = 0;
-const char* pirVal;
+#include <ESP32AnalogRead.h>
 
 // Light sensor variables
-int lightPin = A0;
+int lightPin = 32;
 int lightVal = 0;
 char lightCharVal[5];
+
+ESP32AnalogRead adc;
 
 // WiFi details
 const char* ssid = SECRET_SSID;
@@ -25,8 +23,8 @@ PubSubClient client(wifiClient);
 
 void setup() {
   // Set up the PIR
-  pinMode(PIRPin, INPUT);
-  pinMode(lightPin, INPUT);
+  //pinMode(lightPin, INPUT);
+  adc.attach(32);
 
   // Create serial
   Serial.begin(115200);
@@ -48,34 +46,21 @@ void setup() {
 }
 
 void loop() {
-  // PIR
-  delay(250);
-  sensorVal = digitalRead(PIRPin);
-  if (sensorVal == 1){
-    Serial.println("1");
-    pirVal = "1";
-  }
-  else{
-    Serial.println("0");
-    pirVal = "0";
-  }
-
+  delay(1000);
   // Light
-  lightVal = analogRead(lightPin);
+  lightVal = adc.readVoltage();
   Serial.println(lightVal);
   snprintf(lightCharVal, 5, "%d", lightVal);
 
   // MQTT
-  Serial.println(sensorVal);
-  client.publish("home/room/bedroom/movement", pirVal);
-  client.publish("home/room/bedroom/light", lightCharVal);
+  client.publish("home/external/light", lightCharVal);
 }
 
 void connectToMqtt(){
   while(!client.connected()){
-    String clientId = "LightSensor_Internal";
+    String clientId = "LightSensor_External";
     if (client.connect(clientId.c_str(), mqttUser, mqttPass)){
-      client.subscribe("home/room/bedroom");
+      client.subscribe("home/external");
     }
   }
 }
