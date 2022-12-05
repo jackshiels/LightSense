@@ -23,8 +23,7 @@ PubSubClient client(wifiClient);
 
 void setup() {
   // Set up the PIR
-  //pinMode(lightPin, INPUT);
-  adc.attach(32);
+  pinMode(lightPin, INPUT);
 
   // Create serial
   Serial.begin(115200);
@@ -47,8 +46,9 @@ void setup() {
 
 void loop() {
   delay(1000);
+  
   // Light
-  lightVal = adc.readVoltage();
+  lightVal = analogRead(lightPin);
   Serial.println(lightVal);
   snprintf(lightCharVal, 5, "%d", lightVal);
 
