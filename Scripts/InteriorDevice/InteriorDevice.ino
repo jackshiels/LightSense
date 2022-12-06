@@ -1,14 +1,14 @@
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 #include <PubSubClient.h>
 #include "arduino_secrets.h"
 
 // PIR sensor variables
-int PIRPin = D0;
-char* sensorVal = 0;
+int PIRPin = 34;
+int sensorVal = 0;
 const char* pirVal;
 
 // Light sensor variables
-int lightPin = A0;
+int lightPin = 32;
 int lightVal = 0;
 char lightCharVal[5];
 
@@ -21,6 +21,7 @@ WiFiClient wifiClient;
 const char* mqttServer = MQTT_SERVER;
 const char* mqttUser = MQTT_USER;
 const char* mqttPass = MQTT_PASS;
+int mqttPort = 1883;
 PubSubClient client(wifiClient);
 
 void setup() {
@@ -41,7 +42,7 @@ void setup() {
   Serial.println("Connected to WiFi");
 
   // PubSubClient
-  client.setServer(mqttServer, 1883);
+  client.setServer(mqttServer, mqttPort);
   if (!client.connected()){
     connectToMqtt();
   }
@@ -52,21 +53,19 @@ void loop() {
   delay(250);
   sensorVal = digitalRead(PIRPin);
   if (sensorVal == 1){
-    Serial.println("1");
     pirVal = "1";
   }
   else{
-    Serial.println("0");
     pirVal = "0";
   }
 
   // Light
   lightVal = analogRead(lightPin);
-  Serial.println(lightVal);
+  Serial.println("Light value is: " + lightVal);
   snprintf(lightCharVal, 5, "%d", lightVal);
 
   // MQTT
-  Serial.println(sensorVal);
+  Serial.println("Movement value is: " + sensorVal);
   client.publish("home/room/bedroom/movement", pirVal);
   client.publish("home/room/bedroom/light", lightCharVal);
 }

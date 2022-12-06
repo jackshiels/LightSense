@@ -4,11 +4,9 @@
 #include <ESP32AnalogRead.h>
 
 // Light sensor variables
-int lightPin = 32;
+int lightPin = 34;
 int lightVal = 0;
 char lightCharVal[5];
-
-ESP32AnalogRead adc;
 
 // WiFi details
 const char* ssid = SECRET_SSID;
@@ -48,7 +46,7 @@ void loop() {
   delay(1000);
   
   // Light
-  lightVal = analogRead(lightPin);
+  lightVal = analogRead(lightPin) / 4;
   Serial.println(lightVal);
   snprintf(lightCharVal, 5, "%d", lightVal);
 
