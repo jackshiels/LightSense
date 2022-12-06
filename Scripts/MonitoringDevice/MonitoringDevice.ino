@@ -3,11 +3,6 @@
 #include "arduino_secrets.h"
 #include <ESP32AnalogRead.h>
 
-// Light sensor variables
-int lightPin = 34;
-int lightVal = 0;
-char lightCharVal[5];
-
 // WiFi details
 const char* ssid = SECRET_SSID;
 const char* pass = SECRET_PASS;
@@ -19,11 +14,12 @@ const char* mqttUser = MQTT_USER;
 const char* mqttPass = MQTT_PASS;
 PubSubClient client(wifiClient);
 
-void setup() {
-  // Set up the PIR
-  pinMode(lightPin, INPUT);
-  analogReadResolution(10);
+// Callback values
+int internalLight = 0;
+int externalLight = 0;
+int movement = 0;
 
+void setup() {
   // Create serial
   Serial.begin(115200);
 
@@ -41,18 +37,14 @@ void setup() {
   if (!client.connected()){
     connectToMqtt();
   }
+  client.setCallback(mqttReader);
 }
 
 void loop() {
   delay(1000);
   
-  // Light
-  lightVal = analogRead(lightPin);
-  Serial.println(lightVal);
-  snprintf(lightCharVal, 5, "%d", lightVal);
-
-  // MQTT
-  client.publish("home/external/light", lightCharVal);
+  // Logic and OLED
+  // TBD
 }
 
 void connectToMqtt(){
@@ -62,4 +54,8 @@ void connectToMqtt(){
       client.subscribe("home/external");
     }
   }
+}
+
+void mqttReader(char* topic, byte* payload, unsigned int length){
+  // Get values
 }
