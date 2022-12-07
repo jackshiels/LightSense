@@ -51,6 +51,7 @@ void loop() {
   
   // Logic and OLED and servo
   // TBD
+  // REMEMBER TO REFERENCE THE CODE USED
 }
 
 void connectToMqtt(){
