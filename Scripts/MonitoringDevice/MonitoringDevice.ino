@@ -2,11 +2,17 @@
 #include <PubSubClient.h>
 #include "arduino_secrets.h"
 #include <ESP32AnalogRead.h>
+#include <Servo.h>
 
 // WiFi details
 const char* ssid = SECRET_SSID;
 const char* pass = SECRET_PASS;
 WiFiClient wifiClient;
+
+// Servo
+int servoPin = 1;
+Servo servo;
+int angle = 0;
 
 // PubSubClient
 const char* mqttServer = MQTT_SERVER;
@@ -43,7 +49,7 @@ void setup() {
 void loop() {
   delay(1000);
   
-  // Logic and OLED
+  // Logic and OLED and servo
   // TBD
 }
 
@@ -51,11 +57,18 @@ void connectToMqtt(){
   while(!client.connected()){
     String clientId = "LightSensor_External";
     if (client.connect(clientId.c_str(), mqttUser, mqttPass)){
-      client.subscribe("home/external");
+      client.subscribe("home/bedroom/light");
+      client.subscribe("home/external/light";)
     }
   }
 }
 
 void mqttReader(char* topic, byte* payload, unsigned int length){
-  // Get values
+  // Get values by converting bytes
+  if (topic == "home/bedroom/light"){
+    internalLight = (uint32_t)payload;
+  }
+  else if (topic == "home/external/light"){
+    externalLight = (uint32_t)payload;
+  }
 }
