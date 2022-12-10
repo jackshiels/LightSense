@@ -3,7 +3,8 @@
 #include "arduino_secrets.h"
 #include <ESP32AnalogRead.h>
 #include <ESP32_Servo.h>
-#include <cstring>
+#include <string>
+#include <math.h>
 
 // Video code
 #include <SPI.h>
@@ -28,18 +29,20 @@ WiFiClient wifiClient;
 int servoPin = 32;
 Servo servo;
 int angle = 0;
+bool servoDown = false;
 
 // PubSubClient
 const char* mqttServer = MQTT_SERVER;
 const char* mqttUser = MQTT_USER;
 const char* mqttPass = MQTT_PASS;
 PubSubClient client(wifiClient);
-char message[4];
+const char* convertedMessage;
 
 // Callback values
 int internalLight = -1;
 int externalLight = -1;
-int movement = 0;
+int movement = -1;
+int messageNumeric = 0;
 
 void setup() {
   // Create serial
@@ -87,7 +90,6 @@ void setup() {
 }
 
 void loop() {
-  delay(50);
   client.loop();
   // Logic and OLED and servo
   renderValues();
@@ -98,33 +100,71 @@ void connectToMqtt(){
     String clientId = "LightSense_Monitor";
     if (client.connect(clientId.c_str(), mqttUser, mqttPass)){
       client.subscribe("home/room/bedroom/light");
+      client.subscribe("home/room/bedroom/movement");
       client.subscribe("home/external/light");
     }
   }
 }
 
 void mqttReader(char* topic, byte* payload, unsigned int length){
-  // Get values by converting bytes
-  Serial.println("hello");
-  if (topic == "home/room/bedroom/light"){
-    //Serial.println((char)payload[0]);
+  convertedMessage = reinterpret_cast<const char*>(payload);
+  messageNumeric = atoi(convertedMessage);
+  if (strcmp(topic, "home/room/bedroom/light") == 0){
+    internalLight = messageNumeric;
   }
-  else if (topic == "home/external/light"){
-    //Serial.println((char)payload[0]);
+  if (strcmp(topic, "home/room/bedroom/movement") == 0){
+    movement = messageNumeric;
+  }
+  if (strcmp(topic, "home/external/light") == 0){
+    externalLight = messageNumeric;
   }
 }
-
+ 
 void renderValues(void) {
   display.clearDisplay();
-  delay(250);
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(10, 0);
-  if (internalLight > externalLight){
+  if (((internalLight > externalLight)
+  || (internalLight < externalLight))
+  && movement == 1){
+    if (servoDown){
+      servoDown = false;
+      moveServo(servoDown);
+    }
     display.println("HAPPY :)");
   }
- else{
-   display.println("SAD :(");
- }
+  else if (internalLight > externalLight
+  && movement == 0){
+    display.println("SAD :(");
+    if (!servoDown){
+      servoDown = true;
+      moveServo(servoDown);
+    }
+  }
+  else {
+    display.println("SAD :(");
+    if (!servoDown){
+      servoDown = true;
+      moveServo(servoDown);
+    }
+  } 
   display.display();
+}
+
+void moveServo(bool down){
+  if (down){
+    for(angle = 10; angle < 120; angle++)  
+    {                                  
+      servo.write(angle);               
+      delay(15);                   
+    } 
+  }
+  else{
+    for(angle = 120; angle > 10; angle--)    
+    {                                
+      servo.write(angle);           
+      delay(15);       
+    }
+  }
 }

@@ -26,6 +26,7 @@ const char* pirVal;
 // Light sensor variables
 int lightPin = 32;
 int lightVal = 0;
+float percentVal = 0.0;
 char lightCharVal[30];
 
 // WiFi details
@@ -86,7 +87,7 @@ void setup() {
 
 void loop() {
   // PIR
-  delay(250);
+  delay(2500);
   sensorVal = digitalRead(PIRPin);
   if (sensorVal == 1){
     pirVal = "1";
@@ -96,7 +97,8 @@ void loop() {
   }
 
   // Light
-  lightVal = analogRead(lightPin);
+  percentVal = analogRead(lightPin);
+  lightVal = (percentVal / 4095) * 100;
   Serial.print("Light value is: ");
   Serial.println(lightVal);
   snprintf(lightCharVal, 5, "%d", lightVal);
@@ -109,6 +111,9 @@ void loop() {
 
   // Test OLED
   renderValues();
+
+  // Loop
+  client.loop();
 }
 
 void connectToMqtt(){
@@ -125,7 +130,7 @@ void renderValues(void) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(10, 0);
-  snprintf(lightCharVal, 30, "L: %d% \n M: %d", lightVal, sensorVal);
+  snprintf(lightCharVal, 30, "L: %d%% \n M: %d", lightVal, sensorVal);
   display.println(lightCharVal);
   display.display();
 }

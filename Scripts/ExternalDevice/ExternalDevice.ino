@@ -20,6 +20,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // Light sensor variables
 int lightPin = 34;
 int lightVal = 0;
+float percentVal = 0.0;
 char lightCharVal[30];
 
 // WiFi details
@@ -74,15 +75,19 @@ void setup() {
   if (!client.connected()){
     connectToMqtt();
   }
+
+  // Loop
+  client.loop();
 }
 
 void loop() {
-  delay(250);
+  delay(2500);
   
   // Light
-  lightVal = analogRead(lightPin);
+  percentVal = analogRead(lightPin);
+  lightVal = (percentVal / 4095) * 100;
   Serial.println(lightVal);
-  snprintf(lightCharVal, 5, "%d", lightVal);
+  snprintf(lightCharVal, 5, "%d%", lightVal);
 
   // MQTT
   client.publish("home/external/light", lightCharVal);
@@ -105,7 +110,7 @@ void renderValues(void) {
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(10, 0);
-  snprintf(lightCharVal, 30, "L: %d%", lightVal);
+  snprintf(lightCharVal, 30, "L: %d%%", lightVal);
   display.println(lightCharVal);
   display.display();
 }
