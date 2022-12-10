@@ -1,7 +1,6 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include "arduino_secrets.h"
-#include <ESP32AnalogRead.h>
 
 // Video code
 #include <SPI.h>
