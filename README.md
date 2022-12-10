@@ -82,3 +82,4 @@ https://pubsubclient.knolleary.net/api
 https://workshops.cetools.org/codelabs/CASA0019-unity-mqtt/index.html?index=..%2F..index#0
 https://cdn.shopify.com/s/files/1/1509/1638/files/ESP-32_NodeMCU_Developmentboard_Schematic_korr.pdf?v=1666000508
 https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/
+https://www.mischianti.org/images-to-byte-array-online-converter-cpp-arduino/
