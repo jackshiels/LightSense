@@ -4,6 +4,8 @@
 <b>Jack Shiels</b>
 A project for UCL's CASA0016 module for building connected environments
 
+Video available here: https://youtu.be/dj-cJYu9SqU
+
 # Problem - Energy Costs £££'s!
 The advent of the Russia-Ukraine war created an unstable energy market, leading to some serious costs for the average Briton [[1]](#1). As such, many will seek to minimise their energy costs as Winter approaches. The Internet of Things (IoT) could help to mend this situation through careful energy management and social conditioning to prevent wastage. The aim of this project is to remind individuals to monitor their energy usage when it comes to indoor lighting.
 
