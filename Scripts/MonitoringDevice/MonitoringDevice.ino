@@ -1,7 +1,6 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include "arduino_secrets.h"
-#include <ESP32Servo.h>
 #include <string>
 #include <math.h>
 
@@ -98,12 +97,6 @@ const char* ssid = SECRET_SSID;
 const char* pass = SECRET_PASS;
 WiFiClient wifiClient;
 
-// Servo
-int servoPin = 32;
-Servo servo;
-int angle = 0;
-bool servoDown = false;
-
 // PubSubClient
 const char* mqttServer = MQTT_SERVER;
 const char* mqttUser = MQTT_USER;
@@ -121,29 +114,8 @@ void setup() {
   // Create serial
   Serial.begin(115200);
 
-  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-  if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
-    Serial.println(F("SSD1306 allocation failed"));
-    for(;;); // Don't proceed, loop forever
-  }
-
-  display.display();
-  delay(2000); // Pause for 2 seconds
-
-  // Clear the buffer
-  display.clearDisplay();
-
-  // Draw a single pixel in white
-  display.drawPixel(10, 10, SSD1306_WHITE);
-
-  // Show the display buffer on the screen. You MUST call display() after
-  // drawing commands to make them visible on screen!
-  display.display();
-  delay(2000);
-
-  // Servo setup
-  servo.attach(servoPin);
-  servo.write(angle);
+  // Screen
+  prepareDisplay();
 
   // WiFi connect
   WiFi.begin(ssid, pass);
@@ -200,27 +172,16 @@ void behave(void) {
   if (((internalLight > externalLight)
   || (internalLight < externalLight))
   && movement == 1){
-    if (servoDown){
-      servoDown = false;
-      moveServo(servoDown);
-    }
+    Serial.println("Happy");
     mouthDisplay(true);
   }
   else if (internalLight > externalLight
   && movement == 0){
-    display.println("SAD :(");
-    if (!servoDown){
-      servoDown = true;
-      moveServo(servoDown);
-    }
+    Serial.println("Sad");
     mouthDisplay(false);
   }
   else {
-    display.println("SAD :(");
-    if (!servoDown){
-      servoDown = true;
-      moveServo(servoDown);
-    }
+    Serial.println("Sad");
     mouthDisplay(false);
   } 
   display.display();
@@ -241,22 +202,13 @@ void mouthDisplay(bool happy) {
     frown, logoWidth, logoHeight, 1);
   }
   display.display();
-  delay(1000);
+  delay(100);
 }
 
-void moveServo(bool down){
-  if (down){
-    for(angle = 10; angle < 120; angle++)  
-    {                                  
-      servo.write(angle);               
-      delay(15);                   
-    } 
-  }
-  else{
-    for(angle = 120; angle > 10; angle--)    
-    {                                
-      servo.write(angle);           
-      delay(15);       
-    }
-  }
+void prepareScreen(){
+  display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS));
+  display.display();
+  delay(1000); 
+  display.clearDisplay();
+  delay(2000);
 }
