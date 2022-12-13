@@ -10,7 +10,7 @@ The advent of the Russia-Ukraine war created an unstable energy market, leading 
 # Solution: LightSense Light Monitoring and Presentation
 Energy can take many forms - heat, light, sound, and many more. However, what's the use of energy if it is not being enjoyed by the user? 
 
-LightSense is a family of small sensor units with a specific purpose - to track light levels in rooms, correlate them with human occupation of those rooms, and recommend the user adjusts their energy usage when room energy is being wasted. For example, a room may be left with the lights on, but nobody is there. This is a waste!
+LightSense is a family of small sensor units with a specific purpose - to track light and temperature levels in rooms, correlate them with human occupation of those rooms, and recommend the user adjusts their energy usage when room energy is being wasted. For example, a room may be left with the lights on, but nobody is there. This is a waste! Similarly, a window may be left open, leading to an unacceptable drop in temperature when the user arrives home. In this case, valuable heat energy is lost. Preventative alerts allow both situations to be avoided or mitigated. 
 
 This system would be split into three sensors:
 - An external light monitor
@@ -23,9 +23,7 @@ The original sketch for my design is shown below:
 
 ## Early Prototypes
 
-Originally, I intended to include a Unity-based home monitor that would illustrate how my home was being lit. However, I quickly realised that this would be too challenging in the time-frame. I instead elected to create a device that would reflect the state of the system. A couple of early prototypes were built. At first, I just fooled around with breadboards and Arduinos:
-
-![Breadboard](https://github.com/jackshiels/LightSense/blob/main/Images/Breadboard.jpeg?raw=true)
+Originally, I intended to include a Unity-based home monitor that would illustrate how my home was being lit. However, I quickly realised that this would be too challenging in the time-frame. I instead elected to create a device that would reflect the state of the system. 
 
 Afterwards, I designed several Fritz diagrams from which to create a more concrete design. Each of the individual sensors is illustrated and described:
 - The external sensor only picks up external light and displays the light level of a light sensor as a percentage on a small OLED screen.
@@ -42,7 +40,11 @@ I also ordered several parts from Amazon and eBay. These included:
 
 ## Construction
 
-I employed a rapid prototyping approach using architectural foam and glue to build sensors in a short period:
+A couple of early prototypes were built. At first, I just fooled around with breadboards and Arduinos:
+
+![Breadboard](https://github.com/jackshiels/LightSense/blob/main/Images/Breadboard.jpeg?raw=true)
+
+I then employed a rapid prototyping approach using architectural foam and glue to build sensors in a short period:
 
 ![Fritz](https://github.com/jackshiels/LightSense/blob/main/Images/PrototypeBox.jpeg?raw=true)
 
