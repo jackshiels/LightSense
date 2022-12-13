@@ -48,17 +48,13 @@ I then employed a rapid prototyping approach using architectural foam and glue t
 
 ![Fritz](https://github.com/jackshiels/LightSense/blob/main/Images/PrototypeBox.jpeg?raw=true)
 
-However, these designs were quite flimsy. I realised that I needed a more robust prototyping approach. So, instead of foam I bought a lego set from which to design my enclosures.:
+However, these designs were quite flimsy. I realised that I needed a more robust prototyping approach. So, instead of foam I bought a lego set from which to design my enclosures:
 
 ![Lego](https://github.com/jackshiels/LightSense/blob/main/Images/Lego.jpeg?raw=true)
 
 I also decided to solder the screen and light sensor onto a PCB for the external sensor. There were some casualties along the way!
 
 ![Soldering](https://github.com/jackshiels/LightSense/blob/main/Images/Solder.jpeg?raw=true)
-
-My efforts quickly evolved into the three sensors you see below:
-
-![LegoSet](https://github.com/jackshiels/LightSense/blob/main/Images/Set.jpg?raw=true)
 
 ## Software
 
@@ -100,7 +96,13 @@ void mqttReader(char* topic, byte* payload, unsigned int length){
 }
 ```
 
-The final result can be seen in the video here: https://youtu.be/dj-cJYu9SqU
+## Final Design
+
+My efforts quickly evolved into the three sensors you see below:
+
+![LegoSet](https://github.com/jackshiels/LightSense/blob/main/Images/Set.jpg?raw=true)
+
+The final result can also be seen in the video here: https://youtu.be/dj-cJYu9SqU
 
 ## Reflections
 
