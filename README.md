@@ -1,5 +1,3 @@
-
-
 # LightSense
 <b>Jack Shiels</b>
 A project for UCL's CASA0016 module for building connected environments
@@ -14,47 +12,102 @@ Energy can take many forms - heat, light, sound, and many more. However, what's 
 
 LightSense is a family of small sensor units with a specific purpose - to track light and temperature levels in rooms, correlate them with human occupation of those rooms, and recommend the user adjusts their energy usage when room energy is being wasted. For example, a room may be left with the lights on, but nobody is there. This is a waste! Similarly, a window may be left open, leading to an unacceptable drop in temperature when the user arrives home. In this case, valuable heat energy is lost. Preventative alerts allow both situations to be avoided or mitigated. 
 
-This project was designed when creating some quick sketches for an IoT architecture. Originally, the data would be displayed on a web page, but this was extended to include a 3D rendering of the home.
+This system would be split into three sensors:
+- An external light monitor
+- An internal light and motion monitor
+- A reporting device to indicate energy usage
+
+The original sketch for my design is shown below:
 
 ![Architecture diagram](https://github.com/jackshiels/LightSense/blob/main/Images/Sketchup.jpg?raw=true)
 
-## Proposed Architecture
-A diagram of the detailed architecture is rendered below:
+## Early Prototypes
 
-![Architecture diagram](https://github.com/jackshiels/LightSense/blob/main/Images/LightSenseArchitecture.png?raw=true)
+Originally, I intended to include a Unity-based home monitor that would illustrate how my home was being lit. However, I quickly realised that this would be too challenging in the time-frame. I instead elected to create a device that would reflect the state of the system. A couple of early prototypes were built. At first, I just fooled around with breadboards and Arduinos:
 
-LightSense sensors are split into two types of units: interior and exterior. The exterior sensor grabs the external temperature and ambient light level to get a "baseline" reading. This data is then sent to InfluxDB on the Raspberry Pi. An internal sensor captures local data, meaning a comparison can be made between the internal and external light and temperature values. Additionally, the internal sensor captures motion with a PIR sensor tuned to provide updates at a minute interval. Lastly, these values are displayed in a Unity3D application that renders a 3D model of the home, complete with alerts that show when specific rooms are occupied.
+![Breadboard](https://github.com/jackshiels/LightSense/blob/main/Images/Breadboard.jpeg?raw=true)
 
-Parts that I intend to use include:
+Afterwards, I designed several Fritz diagrams from which to create a more concrete design. Each of the individual sensors is illustrated and described:
+- The external sensor only picks up external light and displays the light level of a light sensor as a percentage on a small OLED screen.
+- The internal sensor uses a light sensor and a PIR sensor to track internal light and movement.
+- The monitor only uses an OLED display to indicate if energy is being wasted.
 
-ESP32 boards [[2]](#2):
+![Fritz](https://github.com/jackshiels/LightSense/blob/main/Images/Fritz.jpg?raw=true)
 
-![ESP32 boards](https://m.media-amazon.com/images/I/A1Ttq+6868L._SX522_.jpg)
+I also ordered several parts from Amazon and eBay. These included:
 
-PIR sensors [[3]](#3):
+- Three ESP32 modules.
+- Several resistor-based light sensors.
+- Several SSD1306 OLED displays.
 
-![PIR sensors](https://m.media-amazon.com/images/I/71RI9JGggML._SX522_.jpg)
+## Construction
 
-DHT22 temperature sensors [[4]](#4):
+I employed a rapid prototyping approach using architectural foam and glue to build sensors in a short period:
 
-![Temperature sensor](https://m.media-amazon.com/images/I/61CC4PSVW2L._SX522_.jpg)
+![Fritz](https://github.com/jackshiels/LightSense/blob/main/Images/PrototypeBox.jpeg?raw=true)
 
-Raspberry Pi 4GB [[5]](#5):
+However, these designs were quite flimsy. I realised that I needed a more robust prototyping approach. So, instead of foam I bought a lego set from which to design my enclosures.:
 
-![Raspberry Pi](https://m.media-amazon.com/images/I/912ja-jKOfL._AC_SX425_.jpg)
+![Lego](https://github.com/jackshiels/LightSense/blob/main/Images/Lego.jpeg?raw=true)
 
-By understanding when rooms are left empty with lights on, or heat is being lost, the user can better manage their energy usages throughout the home. A further application of the project is home security monitoring using the PIR sensors. The Unity3D executable may even be turned into an iOS or Android application. Some potential downsides include:
+I also decided to solder the screen and light sensor onto a PCB for the external sensor. There were some casualties along the way!
 
-* The need for sensor "tuning" against the baseline e.g., is the external light sensor able to capture ambient light effectively? What if the reflection of a car window shines on the light sensor?
-* It is not yet certain if an otherwise unheated home will naturally tend to the outside temperature (maybe the insulation is a "free" heating boost to the property).
+![Soldering](https://github.com/jackshiels/LightSense/blob/main/Images/Solder.jpeg?raw=true)
 
-Despite these challenges, the project will be an interesting foray into the world of energy sensing, and provides a foundation from which to design even more technically advanced projects in future.
+My efforts quickly evolved into the three sensors you see below:
 
-## Some questions for discussion:
+![LegoSet](https://github.com/jackshiels/LightSense/blob/main/Images/Set.jpg?raw=true)
 
-* What arduino boards would you recommend? Are ESP32 boards a good choice?
-* How will these be powered?
-* How could the light sensor be replaced with an embedded light switch monitor?
+## Software
+
+An MQTT server installed on my Raspberry Pi is used to collect data from the external and internal sensors. Then, the monitor subscribes to these data feeds and makes the monitor smile or frown, based on energy usage. The internal sensor code loop is shown below. It grabs the light value from an analog pin, which uses the resistance of the light input to determine analog voltage. This value is published to the MQTT server as a percentage value.
+
+```
+void loop() {
+  delay(2500);
+  
+  // Light
+  percentVal = analogRead(lightPin);
+  lightVal = (percentVal / 4095) * 100;
+  Serial.println(lightVal);
+  snprintf(lightCharVal, 5, "%d%", lightVal);
+
+  // MQTT
+  client.publish("home/external/light", lightCharVal);
+
+  // OLED
+  renderValues();
+}
+```
+
+The monitor then reads these values and displays a smile or frown accordingly. The smile or frown are based on the light values gleaned from the external and internal sensors:
+
+```
+void mqttReader(char* topic, byte* payload, unsigned int length){
+  convertedMessage = reinterpret_cast<const char*>(payload);
+  messageNumeric = atoi(convertedMessage);
+  if (strcmp(topic, "home/room/bedroom/light") == 0){
+    internalLight = messageNumeric;
+  }
+  if (strcmp(topic, "home/room/bedroom/movement") == 0){
+    movement = messageNumeric;
+  }
+  if (strcmp(topic, "home/external/light") == 0){
+    externalLight = messageNumeric;
+  }
+}
+```
+
+The final result can be seen in the video here: https://youtu.be/dj-cJYu9SqU
+
+## Reflections
+
+Below are a few reflections on the project and areas for improvement:
+
+- Soldering is hard! I ruined some parts trying to solder an open PCB. It would be far better to print my own board and have it made for me.
+- Social pressure from my monitor device feels effective and is perhaps better than an automatic solution.
+- I would have liked to include additional energy sensors such as temperature from heat, but I ran out of time.
+- Lego is an EXTREMELY effective rapid prototyping solution, but would not be good for real-world installations.
 
 Jack Shiels
 
@@ -74,7 +127,7 @@ Amazon EU Sarl (2022). <i>AZDelivery Digital Temperature And Humidity Sensor Mod
 <a id="5">[5]</a>
 Amazon EU Sarl (2022). <i>Raspberry Pi 4 Model B (4GB)</i>. Available at: [https://www.amazon.co.uk/Raspberry-Pi-Model-4GB/dp/B09TTNF8BT](https://www.amazon.co.uk/Raspberry-Pi-Model-4GB/dp/B09TTNF8BT) (Accessed: 27 November 2022).
 
-# Additional Sources:
+# Additional Inspirational Sources:
 https://create.arduino.cc/projecthub/biharilifehacker/arduino-with-pir-motion-sensor-fd540a
 https://learn.adafruit.com/dht
 [https://www.youtube.com/watch?v=pxR6e-3XkIk](https://www.vishay.com/docs/81579/temt6000.pdf)
