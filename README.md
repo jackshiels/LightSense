@@ -10,7 +10,7 @@ The advent of the Russia-Ukraine war created an unstable energy market, leading 
 # Solution: LightSense Light Monitoring and Presentation
 Energy can take many forms - heat, light, sound, and many more. However, what's the use of energy if it is not being enjoyed by the user? 
 
-LightSense is a family of small sensor units with a specific purpose - to track light and temperature levels in rooms, correlate them with human occupation of those rooms, and recommend the user adjusts their energy usage when room energy is being wasted. For example, a room may be left with the lights on, but nobody is there. This is a waste! Similarly, a window may be left open, leading to an unacceptable drop in temperature when the user arrives home. In this case, valuable heat energy is lost. Preventative alerts allow both situations to be avoided or mitigated. 
+LightSense is a family of small sensor units with a specific purpose - to track light levels in rooms, correlate them with human occupation of those rooms, and recommend the user adjusts their energy usage when room energy is being wasted. For example, a room may be left with the lights on, but nobody is there. This is a waste!
 
 This system would be split into three sensors:
 - An external light monitor
