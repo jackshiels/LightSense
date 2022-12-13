@@ -112,6 +112,7 @@ Below are a few reflections on the project and areas for improvement:
 - Social pressure from my monitor device feels effective and is perhaps better than an automatic solution.
 - I would have liked to include additional energy sensors such as temperature from heat, but I ran out of time.
 - Lego is an EXTREMELY effective rapid prototyping solution, but would not be good for real-world installations.
+- This project could be updated in future to monitor smart meter usage, too.
 
 Jack Shiels
 
