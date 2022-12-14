@@ -120,18 +120,6 @@ Jack Shiels
 <a id="1">[1]</a>
 Mason, R. & Elliot, L. (2022). <i>Millions of UK households to pay more for energy from April</i>. Available at: [https://www.theguardian.com/politics/2022/nov/16/millions-of-uk-households-to-pay-more-for-energy-from-april](https://www.theguardian.com/politics/2022/nov/16/millions-of-uk-households-to-pay-more-for-energy-from-april) (Accessed: 27 November 2022).
 
-<a id="2">[2]</a>
-Amazon EU Sarl (2022). <i>AZDelivery 3 x ESP32-DevKitC NodeMCU WiFi WLAN CP2102 ESP32-WROOM-32D IoT 2-In-1 Microcontroller Bluetooth Module Development Board compatible with Arduino including E-Book!</i>. Available at: [https://amzn.eu/d/5WvY7B8](https://amzn.eu/d/5WvY7B8) (Accessed: 27 November 2022).
-
-<a id="3">[3]</a>
-Amazon EU Sarl (2022). <i>AZDelivery 5 x Compatible with HC-SR501 PIR Infrared Motion Detection Sensor Module compatible with Arduino and Raspberry Pi including E-Book!</i>. Available at: [https://www.amazon.co.uk/AZDelivery-HC-SR501-Detection-Raspberry-including/dp/B07V9GFHFW](https://www.amazon.co.uk/AZDelivery-HC-SR501-Detection-Raspberry-including/dp/B07V9GFHFW) (Accessed: 27 November 2022).
-
-<a id="4">[4]</a>
-Amazon EU Sarl (2022). <i>AZDelivery Digital Temperature And Humidity Sensor Module 3.3V 5V Compatible with DHT22 Compatible with AM2302 Replace SHT11 SHT15 Compatible With Arduino and Raspberry Pi Including E-Book!</i>. Available at: [https://amzn.eu/d/iVrD5Em](https://amzn.eu/d/iVrD5Em) (Accessed: 27 November 2022).
-
-<a id="5">[5]</a>
-Amazon EU Sarl (2022). <i>Raspberry Pi 4 Model B (4GB)</i>. Available at: [https://www.amazon.co.uk/Raspberry-Pi-Model-4GB/dp/B09TTNF8BT](https://www.amazon.co.uk/Raspberry-Pi-Model-4GB/dp/B09TTNF8BT) (Accessed: 27 November 2022).
-
 # Additional Inspirational Sources:
 https://create.arduino.cc/projecthub/biharilifehacker/arduino-with-pir-motion-sensor-fd540a
 https://learn.adafruit.com/dht
