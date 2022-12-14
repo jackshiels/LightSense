@@ -2,6 +2,8 @@
 <b>Jack Shiels</b>
 A project for UCL's CASA0016 module for building connected environments
 
+![LegoSetHeader](https://github.com/jackshiels/LightSense/blob/main/Images/Set.jpg?raw=true)
+
 Video available here: https://youtu.be/dj-cJYu9SqU
 
 # Problem - Energy Costs £££'s!
