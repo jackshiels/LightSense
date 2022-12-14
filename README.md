@@ -98,7 +98,7 @@ void mqttReader(char* topic, byte* payload, unsigned int length){
 }
 ```
 
-The smile was created with a byte array conversion of my images, rendered on the display with the SSD1306 graphics library:
+The smile was created with a char array conversion of my images, rendered on the display with the SSD1306 graphics library:
 
 ```
 const unsigned char smile [] PROGMEM = {
