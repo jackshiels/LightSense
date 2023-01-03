@@ -4,7 +4,7 @@
 #include <string>
 #include <math.h>
 
-// Video code
+// OLED code. All OLED code modified from https://github.com/adafruit/Adafruit_SSD1306
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -111,13 +111,13 @@ int movement = -1;
 int messageNumeric = 0;
 
 void setup() {
-  // Create serial
+  // Create serial bus
   Serial.begin(115200);
 
-  // Screen
+  // Set up OLED screen
   prepareDisplay();
 
-  // WiFi connect
+  // Connect to WiFi
   WiFi.begin(ssid, pass);
   Serial.print("Connecting");
   while(WiFi.status() != WL_CONNECTED){
@@ -126,19 +126,24 @@ void setup() {
   }
   Serial.println("Connected to WiFi");
 
-  // PubSubClient
+  // Connect to the local MQTT server
   client.setServer(mqttServer, 1883);
   if (!client.connected()){
     connectToMqtt();
   }
+  // Set a callback function to get values from the other sensors.
   client.setCallback(mqttReader);
 }
 
+// On loop, grab MQTT values, compare, then act by changing the OLED screen image
+// between a smile and a frown.
 void loop() {
   client.loop();
   behave();
 }
 
+// Repeatedly attempt to connect to MQTT server. Code modified from 
+// https://workshops.cetools.org/codelabs/CASA0014-2-Plant-Monitor/
 void connectToMqtt(){
   while(!client.connected()){
     String clientId = "LightSense_Monitor";
@@ -150,9 +155,14 @@ void connectToMqtt(){
   }
 }
 
+// Grab MQTT values, convert to the right formats, and set in variables.
+// Some code snippets modified from https://workshops.cetools.org/codelabs/CASA0014-2-Plant-Monitor/
 void mqttReader(char* topic, byte* payload, unsigned int length){
+  // Cast the payload byte* to a const char*
   convertedMessage = reinterpret_cast<const char*>(payload);
+  // Convert to int
   messageNumeric = atoi(convertedMessage);
+  // Check the topic value, and save to the right variable
   if (strcmp(topic, "home/room/bedroom/light") == 0){
     internalLight = messageNumeric;
   }
@@ -163,18 +173,22 @@ void mqttReader(char* topic, byte* payload, unsigned int length){
     externalLight = messageNumeric;
   }
 }
- 
+
+// Taking the MQTT values saved in variables, decide how to act
 void behave(void) {
+  // Clear the display
   display.clearDisplay();
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(10, 0);
+  // If movement is happening in the room, no wastage occurs
   if (((internalLight > externalLight)
   || (internalLight < externalLight))
   && movement == 1){
     Serial.println("Happy");
     mouthDisplay(true);
   }
+  // If lights are on and there is no movement, wastage occurs
   else if (internalLight > externalLight
   && movement == 0){
     Serial.println("Sad");
@@ -183,10 +197,12 @@ void behave(void) {
   else {
     Serial.println("Sad");
     mouthDisplay(false);
-  } 
+  }
+  // Render to the OLED
   display.display();
 }
 
+// Renders the appropriate bitmap to the screen
 void mouthDisplay(bool happy) {
   display.clearDisplay();
   if (happy){
@@ -205,6 +221,7 @@ void mouthDisplay(bool happy) {
   delay(100);
 }
 
+// Set up the OLED for startup.
 void prepareScreen(){
   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS));
   display.display();

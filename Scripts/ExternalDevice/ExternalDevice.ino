@@ -2,17 +2,17 @@
 #include <PubSubClient.h>
 #include "arduino_secrets.h"
 
-// Video code
+// OLED code. All OLED code modified from https://github.com/adafruit/Adafruit_SSD1306
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 32 // OLED display height, in pixels
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 32
 
-#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
-#define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
+#define OLED_RESET     -1
+#define SCREEN_ADDRESS 0x3C
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // ------
 
@@ -34,16 +34,16 @@ const char* mqttPass = MQTT_PASS;
 PubSubClient client(wifiClient);
 
 void setup() {
-  // Set up the PIR
+  // Set up the PIR pin
   pinMode(lightPin, INPUT);
 
-  // Create serial
+  // Create serial bus
   Serial.begin(115200);
 
-  // Screen
+  // Set up the screen for rendering the light value
   prepareScreen();
 
-  // WiFi connect
+  // Connect to WiFi
   WiFi.begin(ssid, pass);
   Serial.print("Connecting");
   while(WiFi.status() != WL_CONNECTED){
@@ -52,32 +52,36 @@ void setup() {
   }
   Serial.println("Connected to WiFi");
 
-  // PubSubClient
+  // Connect to the local MQTT server
   client.setServer(mqttServer, 1883);
   if (!client.connected()){
     connectToMqtt();
   }
 
-  // Loop
+  // Loop the MQTT client to send/receive
   client.loop();
 }
 
 void loop() {
   delay(2500);
   
-  // Light
+  // Get the light value
   percentVal = analogRead(lightPin);
+  // Convert the 12-bit value into a percentage
   lightVal = (percentVal / 4095) * 100;
   Serial.println(lightVal);
+  // Construct a string for the OLED display and MQTT server
   snprintf(lightCharVal, 5, "%d%", lightVal);
 
-  // MQTT
+  // Publish the light value to MQTT server
   client.publish("home/external/light", lightCharVal);
 
-  // OLED
+  // Render the value to OLED
   renderValues();
 }
 
+// Repeatedly attempt to connect to MQTT server. Code modified from 
+// https://workshops.cetools.org/codelabs/CASA0014-2-Plant-Monitor/
 void connectToMqtt(){
   while(!client.connected()){
     String clientId = "LightSensor_External";
@@ -87,6 +91,7 @@ void connectToMqtt(){
   }
 }
 
+// Render the light values on the OLED
 void renderValues(void) {
   display.clearDisplay();
   display.setTextSize(2);
@@ -97,6 +102,7 @@ void renderValues(void) {
   display.display();
 }
 
+// Set up the OLED for startup.
 void prepareScreen(){
   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS));
   display.display();

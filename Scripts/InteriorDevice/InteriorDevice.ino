@@ -2,7 +2,7 @@
 #include <PubSubClient.h>
 #include "arduino_secrets.h"
 
-// Test code ------
+// OLED code. All OLED code modified from https://github.com/adafruit/Adafruit_SSD1306
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -42,17 +42,17 @@ int mqttPort = 1883;
 PubSubClient client(wifiClient);
 
 void setup() {
-  // Set up the PIR
+  // Set up the PIR and light pins
   pinMode(PIRPin, INPUT);
   pinMode(lightPin, INPUT);
 
-  // Screen
+  // Set up the OLED
   prepareDisplay();
 
-  // Create serial
+  // Create serial bus
   Serial.begin(115200);
 
-  // WiFi connect
+  // Connect to WiFi
   WiFi.begin(ssid, pass);
   Serial.print("Connecting");
   while(WiFi.status() != WL_CONNECTED){
@@ -61,7 +61,7 @@ void setup() {
   }
   Serial.println("Connected to WiFi");
 
-  // PubSubClient
+  // Connect to the local MQTT server
   client.setServer(mqttServer, mqttPort);
   if (!client.connected()){
     connectToMqtt();
@@ -69,36 +69,40 @@ void setup() {
 }
 
 void loop() {
-  // PIR
+  // Get motion from the PIR sensor
   delay(2500);
   sensorVal = digitalRead(PIRPin);
   if (sensorVal == 1){
     pirVal = "1";
   }
-  else{
+  else {
     pirVal = "0";
   }
 
-  // Light
+  // Get the light value
   percentVal = analogRead(lightPin);
+  // Convert the 12-bit value into a percentage
   lightVal = (percentVal / 4095) * 100;
   Serial.print("Light value is: ");
   Serial.println(lightVal);
+  // Construct a string for the OLED display and MQTT
   snprintf(lightCharVal, 5, "%d", lightVal);
 
-  // MQTT
+  // Send light and movement values to the MQTT server
   Serial.print("Movement value is: ");
   Serial.println(sensorVal);
   client.publish("home/room/bedroom/movement", pirVal);
   client.publish("home/room/bedroom/light", lightCharVal);
 
-  // Test OLED
+  // Render the light and movement values to the OLED
   renderValues();
 
-  // Loop
+  // Loop the MQTT client to send/receive
   client.loop();
 }
 
+// Repeatedly attempt to connect to MQTT server. Code modified from 
+// https://workshops.cetools.org/codelabs/CASA0014-2-Plant-Monitor/
 void connectToMqtt(){
   while(!client.connected()){
     String clientId = "LightSensor_Internal";
@@ -108,6 +112,7 @@ void connectToMqtt(){
   }
 }
 
+// Render the light and movement values on the OLED
 void renderValues(void) {
   display.clearDisplay();
   display.setTextSize(2);
@@ -118,6 +123,7 @@ void renderValues(void) {
   display.display();
 }
 
+// Set up the OLED for startup.
 void prepareScreen(){
   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS));
   display.display();
